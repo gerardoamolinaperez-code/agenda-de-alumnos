@@ -1,0 +1,5267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e293b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agenda alumnos">
+<meta name="application-name" content="Agenda de alumnos particulares">
+<meta name="description" content="Agenda personal para gestionar alumnos, clases y pagos">
+<title>Agenda de alumnos particulares</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+<style>
+:root {
+    --primary: #1e293b;
+    --primary-dark: #0f172a;
+    --primary-soft: #334155;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --success: #166534;
+    --success-bg: #f0fdf4;
+    --danger: #991b1b;
+    --danger-bg: #fef2f2;
+    --warning: #92400e;
+    --warning-bg: #fffbeb;
+    --accent: #475569;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+/* HEADER */
+
+.header {
+    background: var(--primary);
+    color: #f8fafc;
+    padding: 18px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--primary-dark);
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.header-subtitle {
+    font-size: 12px;
+    opacity: .7;
+    margin-top: 3px;
+    font-weight: 400;
+}
+
+/* NAV */
+
+.nav {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px 10px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 68px;
+    z-index: 15;
+}
+
+.nav button {
+    flex: 0 0 auto;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.nav button:hover {
+    background: #f1f5f9;
+    color: var(--text);
+}
+
+.nav button.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* CONTENT */
+
+.content {
+    padding: 14px 12px;
+    padding-bottom: 90px;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+    letter-spacing: 0.01em;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.small {
+    font-size: 13px;
+}
+
+/* BUTTONS */
+
+.btn {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    padding: 10px 14px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    color: var(--text);
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc;
+}
+
+.btn-danger {
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.btn-success {
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    background: var(--success-bg);
+    color: var(--success);
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.btn-warning {
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    background: var(--warning-bg);
+    color: var(--warning);
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+/* FORMS */
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: white;
+    color: var(--text);
+    transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #94a3b8;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.actions button {
+    flex: 1;
+    min-width: 90px;
+}
+
+/* DASHBOARD */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.stat {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.stat-value {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 4px;
+    color: var(--text);
+}
+
+/* CALENDAR */
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.calendar-title {
+    text-align: center;
+    font-weight: 600;
+    text-transform: capitalize;
+    font-size: 15px;
+}
+
+.weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.weekday {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.calendar-day {
+    min-height: 76px;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.calendar-day:hover {
+    border-color: #94a3b8;
+    background: #f1f5f9;
+}
+
+.calendar-day.today {
+    border: 1.5px solid var(--primary);
+    background: #f1f5f9;
+}
+
+.calendar-day.selected {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.day-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.lesson-mini {
+    display: block;
+    background: #e2e8f0;
+    color: #334155;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-top: 3px;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.lesson-mini.pending {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.lesson-mini.attended {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.lesson-mini.absent {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.today-tag {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--primary);
+    margin-left: 4px;
+}
+
+/* LESSON */
+
+.lesson {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.lesson-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.lesson-time {
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 60px;
+    color: var(--text);
+}
+
+.lesson-name {
+    font-weight: 600;
+}
+
+.lesson-info {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.status {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.status.pending {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.status.attended {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.status.absent {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+/* STUDENTS */
+
+.student-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.student-name {
+    font-weight: 600;
+}
+
+.balance {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.balance.zero {
+    color: var(--success);
+}
+
+.balance.pending {
+    color: var(--danger);
+}
+
+/* PENDING LESSONS DETAIL */
+
+.pending-lessons {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+
+.pending-lesson-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.pending-lesson-item:last-child {
+    border-bottom: 0;
+}
+
+.pending-lesson-info {
+    flex: 1;
+}
+
+.pending-lesson-amount {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pending-lesson-amount.partial {
+    color: var(--warning);
+}
+
+.student-balance-block {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.student-balance-block:last-child {
+    border-bottom: 0;
+}
+
+.student-balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+/* PRINT / PDF */
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #printArea,
+    #printArea * {
+        visibility: visible !important;
+    }
+    #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 16px;
+        background: white;
+        color: black;
+    }
+    .modal-backdrop {
+        position: static !important;
+        background: none !important;
+        display: block !important;
+        padding: 0 !important;
+    }
+    .modal {
+        box-shadow: none !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+
+.print-doc {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+}
+
+.print-doc h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: #0f172a;
+    letter-spacing: 0.01em;
+}
+
+.print-doc h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 6px;
+}
+
+.print-doc .meta {
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.print-doc table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+}
+
+.print-doc th,
+.print-doc td {
+    border: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.print-doc th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.print-doc .total-row {
+    font-weight: 600;
+    background: #f8fafc;
+}
+
+.print-doc .status-attended { color: #166534; }
+.print-doc .status-absent { color: #991b1b; }
+.print-doc .status-pending { color: #475569; }
+
+.print-doc .print-footer {
+    margin-top: 28px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* EMPTY */
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 28px 10px;
+    font-size: 14px;
+}
+
+/* MODAL */
+
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    z-index: 100;
+    padding: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop.open {
+    display: flex;
+}
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.close {
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    color: var(--muted);
+}
+
+.close:hover {
+    background: #f8fafc;
+    color: var(--text);
+}
+
+/* FAB */
+
+.fab {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--primary);
+    color: white;
+    font-size: 24px;
+    font-weight: 300;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+    z-index: 30;
+}
+
+.fab:hover {
+    background: var(--primary-dark);
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 85px;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 200;
+    display: none;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.toast.show {
+    display: block;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dashboard .stat:last-child {
+        grid-column: span 2;
+    }
+
+    .calendar-day {
+        min-height: 62px;
+    }
+
+    .lesson-mini {
+        font-size: 9px;
+    }
+}
+
+@media (min-width: 700px) {
+    .calendar-day {
+        min-height: 95px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <div class="header-title">Agenda de alumnos particulares</div>
+        <div class="header-subtitle">Gestión de alumnos y clases</div>
+    </header>
+
+    <nav class="nav" id="nav"></nav>
+
+    <main class="content" id="content"></main>
+
+</div>
+
+<button class="fab" id="fab" title="Nueva clase">+</button>
+
+<div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN Y BASE DE DATOS
+   ========================================================= */
+
+const STORAGE_KEY = "agenda_alumnos_v5";
+const LEGACY_STORAGE_KEYS = ["agenda_tutor_v4_final"];
+const BACKUP_META_KEY = "agenda_alumnos_last_backup";
+
+const DEFAULT_DB = {
+    students: [],
+    lessons: [],
+    payments: [],
+    settings: {
+        hourlyRate: 10000
+    }
+};
+
+let db = loadDatabase();
+
+let state = {
+    section: "calendar",
+    currentMonth: new Date(),
+    selectedDate: new Date(),
+    showAllPayments: false
+};
+
+
+/* =========================================================
+   FUNCIONES GENERALES
+   ========================================================= */
+
+function normalizeDbPayload(data) {
+
+    const students = Array.isArray(data.students) ? data.students : [];
+
+    students.forEach(s => {
+        if (s && s.liquidatedAmount == null) {
+            s.liquidatedAmount = 0;
+        }
+        if (s && s.inactive == null) {
+            s.inactive = false;
+        }
+    });
+
+    const settings = data.settings && typeof data.settings === "object"
+        ? data.settings
+        : {};
+
+    if (settings.hourlyRate == null || !Number.isFinite(Number(settings.hourlyRate))) {
+        settings.hourlyRate = 10000;
+    } else {
+        settings.hourlyRate = Number(settings.hourlyRate);
+    }
+
+    return {
+        students,
+        lessons: Array.isArray(data.lessons) ? data.lessons : [],
+        payments: Array.isArray(data.payments) ? data.payments : [],
+        settings
+    };
+}
+
+
+function loadDatabase() {
+
+    try {
+
+        let saved = localStorage.getItem(STORAGE_KEY);
+        let fromLegacy = false;
+
+        if (!saved) {
+            for (const key of LEGACY_STORAGE_KEYS) {
+                const legacy = localStorage.getItem(key);
+                if (legacy) {
+                    saved = legacy;
+                    fromLegacy = true;
+                    break;
+                }
+            }
+        }
+
+        if (!saved) {
+            return structuredClone(DEFAULT_DB);
+        }
+
+        const data = JSON.parse(saved);
+        const normalized = normalizeDbPayload(data);
+
+        // Migrar a la clave nueva si venía de una versión anterior
+        if (fromLegacy) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+            } catch (e) {
+                console.warn("No se pudo migrar la clave de almacenamiento:", e);
+            }
+        }
+
+        return normalized;
+
+    } catch (error) {
+
+        console.error("Error leyendo datos:", error);
+
+        return structuredClone(DEFAULT_DB);
+    }
+}
+
+
+function saveDatabase() {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(db)
+    );
+
+    try {
+        localStorage.setItem(
+            "agenda_alumnos_last_activity",
+            new Date().toISOString()
+        );
+    } catch (e) {
+        /* ignore */
+    }
+}
+
+
+function getActiveStudents() {
+
+    return db.students.filter(s => !s.inactive);
+}
+
+
+function getHourlyRate() {
+
+    const rate = Number(db.settings?.hourlyRate);
+    return Number.isFinite(rate) && rate >= 0 ? rate : 10000;
+}
+
+
+function openHourlyRateEditor() {
+
+    const current = getHourlyRate();
+    const input = prompt(
+        "Precio por hora ($)\n\n" +
+        "Se usará por defecto al crear clases en modo «por hora».\n" +
+        "Las clases ya cargadas no cambian.",
+        String(current)
+    );
+
+    if (input === null) {
+        return;
+    }
+
+    const value = Number(String(input).replace(",", "."));
+
+    if (!Number.isFinite(value) || value < 0) {
+        alert("Ingresá un monto válido.");
+        return;
+    }
+
+    if (value === current) {
+        return;
+    }
+
+    const ok = confirm(
+        `¿Cambiar el precio por hora de ${formatMoney(current)} a ${formatMoney(value)}?\n\n` +
+        `Solo afecta clases nuevas (o las que edites en modo por hora).\n` +
+        `Las clases ya guardadas mantienen su precio.`
+    );
+
+    if (!ok) {
+        return;
+    }
+
+    if (!db.settings) {
+        db.settings = {};
+    }
+    db.settings.hourlyRate = value;
+    saveDatabase();
+    render();
+    showToast("Precio por hora actualizado");
+}
+
+
+function getUnmarkedLessonsForDate(dateKeyStr) {
+
+    return db.lessons.filter(l =>
+        l.date === dateKeyStr &&
+        (l.status || "pending") === "pending"
+    );
+}
+
+
+function addWeeksToDateKey(dateKeyStr, weeks) {
+
+    const d = dateFromKey(dateKeyStr);
+    d.setDate(d.getDate() + (weeks * 7));
+    return dateKeyFromDate(d);
+}
+
+
+function generateId(prefix = "id") {
+
+    if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+
+    return prefix + "_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+}
+
+
+function formatMoney(value) {
+
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        maximumFractionDigits: 0
+    }).format(Number(value) || 0);
+}
+
+
+/*
+    MUY IMPORTANTE:
+
+    No usamos new Date("2026-09-30")
+    porque eso puede interpretarse como UTC.
+
+    Creamos siempre las fechas manualmente.
+*/
+
+function dateKey(year, month, day) {
+
+    return (
+        String(year) +
+        "-" +
+        String(month + 1).padStart(2, "0") +
+        "-" +
+        String(day).padStart(2, "0")
+    );
+}
+
+
+function dateKeyFromDate(date) {
+
+    return dateKey(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+    );
+}
+
+
+function dateFromKey(key) {
+
+    const parts = key.split("-").map(Number);
+
+    return new Date(
+        parts[0],
+        parts[1] - 1,
+        parts[2],
+        12,
+        0,
+        0,
+        0
+    );
+}
+
+
+function todayKey() {
+
+    return dateKeyFromDate(new Date());
+}
+
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+function formatDate(date) {
+
+    return date.toLocaleDateString("es-AR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2200);
+}
+
+
+/* =========================================================
+   ALUMNOS
+   ========================================================= */
+
+function getStudent(id) {
+
+    return db.students.find(student => student.id === id);
+}
+
+
+/** Monto de clases ya archivadas (pagadas y borradas del historial). */
+function getStudentLiquidated(studentId) {
+
+    const student = getStudent(studentId);
+    return Math.max(0, Number(student?.liquidatedAmount || 0));
+}
+
+
+/** Suma de pagos registrados (histórico de lo cobrado). */
+function getStudentRawPaid(studentId) {
+
+    return db.payments
+        .filter(p => p.studentId === studentId)
+        .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+}
+
+
+/**
+ * Pagos aún "activos" para saldo y FIFO:
+ * cobrado total menos lo ya liquidado al archivar clases pagadas.
+ */
+function getStudentEffectivePaid(studentId) {
+
+    return Math.max(
+        0,
+        getStudentRawPaid(studentId) - getStudentLiquidated(studentId)
+    );
+}
+
+
+/** Total cobrado por clases asistidas (activas, no archivadas). */
+function getStudentCharged(studentId) {
+
+    return db.lessons
+        .filter(lesson =>
+            lesson.studentId === studentId &&
+            lesson.status === "attended"
+        )
+        .reduce(
+            (total, lesson) => total + Number(lesson.price || 0),
+            0
+        );
+}
+
+
+/**
+ * Saldo adeudado = clases ASISTIDAS − pagos efectivos (≥ 0).
+ * Las pendientes no suman deuda (mismo criterio que el PDF).
+ */
+function getStudentBalance(studentId) {
+
+    const charged = getStudentCharged(studentId);
+    const paid = getStudentEffectivePaid(studentId);
+
+    return Math.max(0, charged - paid);
+}
+
+
+/**
+ * Crédito / pago adelantado (≥ 0).
+ * Se descuenta solo cuando haya clases marcadas como asistidas.
+ */
+function getStudentCredit(studentId) {
+
+    const charged = getStudentCharged(studentId);
+    const paid = getStudentEffectivePaid(studentId);
+
+    return Math.max(0, paid - charged);
+}
+
+
+/**
+ * Etiqueta unificada de saldo en toda la app.
+ * { text, css: "pending" | "zero" }
+ */
+function getBalanceDisplay(studentId) {
+
+    const credit = getStudentCredit(studentId);
+    const balance = getStudentBalance(studentId);
+
+    if (credit > 0) {
+        return {
+            text: "A favor " + formatMoney(credit),
+            css: "zero"
+        };
+    }
+
+    if (balance > 0) {
+        return {
+            text: "Debe " + formatMoney(balance),
+            css: "pending"
+        };
+    }
+
+    return {
+        text: "Al día",
+        css: "zero"
+    };
+}
+
+
+function getTotalPending() {
+
+    return db.students.reduce(
+        (total, student) =>
+            total + getStudentBalance(student.id),
+        0
+    );
+}
+
+
+/**
+ * Asigna pagos efectivos FIFO sobre clases asistidas.
+ * Devuelve las que todavía tienen saldo pendiente.
+ */
+function getStudentPendingLessons(studentId) {
+
+    const totalPaid = getStudentEffectivePaid(studentId);
+
+    const lessons = db.lessons
+        .filter(l =>
+            l.studentId === studentId &&
+            l.status === "attended"
+        )
+        .slice()
+        .sort((a, b) => {
+            const dateCmp = a.date.localeCompare(b.date);
+            if (dateCmp !== 0) return dateCmp;
+            return a.time.localeCompare(b.time);
+        });
+
+    let remainingPaid = totalPaid;
+    const pending = [];
+
+    for (const lesson of lessons) {
+
+        const price = Number(lesson.price) || 0;
+
+        if (remainingPaid >= price) {
+            remainingPaid -= price;
+            continue;
+        }
+
+        const owed = price - remainingPaid;
+        pending.push({
+            ...lesson,
+            owed,
+            originalPrice: price,
+            partial: remainingPaid > 0
+        });
+        remainingPaid = 0;
+    }
+
+    return pending;
+}
+
+
+/**
+ * Estado de pago FIFO por clase asistida:
+ * "yes" | "partial" | "no"
+ */
+function getAttendedPaidStatusMap(studentId) {
+
+    const totalPaid = getStudentEffectivePaid(studentId);
+
+    const lessons = db.lessons
+        .filter(l =>
+            l.studentId === studentId &&
+            l.status === "attended"
+        )
+        .slice()
+        .sort((a, b) => {
+            const dateCmp = a.date.localeCompare(b.date);
+            if (dateCmp !== 0) return dateCmp;
+            return a.time.localeCompare(b.time);
+        });
+
+    const map = {};
+    let remainingPaid = totalPaid;
+
+    for (const lesson of lessons) {
+        const price = Number(lesson.price) || 0;
+        if (remainingPaid >= price) {
+            remainingPaid -= price;
+            map[lesson.id] = "yes";
+        } else if (remainingPaid > 0) {
+            map[lesson.id] = "partial";
+            remainingPaid = 0;
+        } else {
+            map[lesson.id] = "no";
+        }
+    }
+
+    return map;
+}
+
+
+/**
+ * Modal: borrar historial del alumno hasta una fecha.
+ * Se eliminan: asistidas totalmente pagadas y faltas.
+ * Se conservan: pendientes, pago parcial y adeudadas.
+ * Los pagos se ajustan por el monto de las asistidas borradas.
+ */
+function openClearUntilModal(studentId) {
+
+    const student = getStudent(studentId);
+
+    if (!student) {
+        return;
+    }
+
+    const modal = document.getElementById("modal");
+
+    modal.innerHTML = `
+
+        <div class="modal-header">
+            <div class="modal-title">
+                Borrar historial hasta…
+            </div>
+            <button class="close" id="closeModal">×</button>
+        </div>
+
+        <p class="small muted" style="margin-top:0">
+            Alumno: <b>${escapeHTML(student.name)}</b>
+        </p>
+
+        <p class="small muted">
+            Se borrarán las clases hasta la fecha indicada (inclusive),
+            excepto las <b>pendientes</b>, las con <b>pago parcial</b>
+            y las que todavía se <b>adeudan</b>.
+            Los pagos <b>no se borran</b> (el cobrado histórico se mantiene);
+            las asistidas pagadas que se archiven quedan marcadas como liquidadas.
+        </p>
+
+        <div class="form-group">
+            <label>Borrar clases hasta (inclusive)</label>
+            <input
+                type="date"
+                id="clearUntilDate"
+                value="${todayKey()}"
+            >
+        </div>
+
+        <div class="actions">
+            <button class="btn-secondary" id="cancelClearUntil">
+                Cancelar
+            </button>
+            <button class="btn-danger" id="confirmClearUntil">
+                Revisar y borrar
+            </button>
+        </div>
+
+    `;
+
+    openModal();
+
+    document.getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+    document.getElementById("cancelClearUntil")
+        .addEventListener("click", closeModal);
+
+    document.getElementById("confirmClearUntil")
+        .addEventListener("click", () => {
+
+            const until = document.getElementById("clearUntilDate").value;
+
+            if (!until) {
+                alert("Seleccioná una fecha.");
+                return;
+            }
+
+            clearLessonsUntilDate(studentId, until);
+        });
+}
+
+
+function clearLessonsUntilDate(studentId, untilDate) {
+
+    const student = getStudent(studentId);
+
+    if (!student) {
+        return;
+    }
+
+    const paidMap = getAttendedPaidStatusMap(studentId);
+
+    const candidates = db.lessons.filter(l =>
+        l.studentId === studentId &&
+        l.date <= untilDate
+    );
+
+    const toDelete = [];
+    let liquidateAmount = 0;
+    let countAbsent = 0;
+    let countPaid = 0;
+
+    for (const lesson of candidates) {
+        const st = lesson.status || "pending";
+
+        // Pendientes (indeterminadas): no borrar
+        if (st === "pending") {
+            continue;
+        }
+
+        // Faltas: se pueden archivar (no afectan saldo)
+        if (st === "absent") {
+            toDelete.push(lesson);
+            countAbsent++;
+            continue;
+        }
+
+        // Asistidas: solo si están totalmente pagadas
+        if (st === "attended") {
+            const payStatus = paidMap[lesson.id];
+            if (payStatus === "yes") {
+                toDelete.push(lesson);
+                liquidateAmount += Number(lesson.price) || 0;
+                countPaid++;
+            }
+            // partial / no → se conservan
+        }
+    }
+
+    if (toDelete.length === 0) {
+        alert(
+            "No hay clases para borrar hasta esa fecha " +
+            "(solo quedarían pendientes, parciales o adeudadas)."
+        );
+        return;
+    }
+
+    const ok = confirm(
+        `Alumno: ${student.name}\n` +
+        `Hasta: ${formatLessonDate(untilDate)}\n\n` +
+        `Se eliminarán ${toDelete.length} clase(s):\n` +
+        `· ${countPaid} asistida(s) totalmente pagada(s)\n` +
+        `· ${countAbsent} falta(s)\n\n` +
+        (liquidateAmount > 0
+            ? `Los pagos se conservan (cobrado histórico no baja).\n` +
+              `Se marcarán ${formatMoney(liquidateAmount)} como ya liquidados.\n\n`
+            : "") +
+        `Se conservan pendientes, pagos parciales y clases adeudadas.\n\n` +
+        `Recomendación: exportá un respaldo antes si no lo hiciste hace poco.\n\n` +
+        `¿Continuar?`
+    );
+
+    if (!ok) {
+        return;
+    }
+
+    const idsToRemove = new Set(toDelete.map(l => l.id));
+    db.lessons = db.lessons.filter(l => !idsToRemove.has(l.id));
+
+    // No se borran pagos: se acumula monto liquidado para el FIFO/saldo
+    if (liquidateAmount > 0) {
+        student.liquidatedAmount =
+            getStudentLiquidated(studentId) + liquidateAmount;
+    }
+
+    saveDatabase();
+    closeModal();
+    render();
+
+    showToast(`${toDelete.length} clase(s) eliminada(s)`);
+}
+
+
+function formatLessonDate(dateKeyStr) {
+
+    try {
+        const d = dateFromKey(dateKeyStr);
+        return d.toLocaleDateString("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    } catch {
+        return dateKeyStr;
+    }
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+
+function renderNavigation() {
+
+    const nav = document.getElementById("nav");
+
+    const sections = [
+        ["calendar", "Mes"],
+        ["day", "Día"],
+        ["students", "Alumnos"],
+        ["payments", "Pagos"],
+        ["finances", "Finanzas"],
+        ["data", "Datos"]
+    ];
+
+    nav.innerHTML = sections.map(section => `
+        <button
+            class="${state.section === section[0] ? "active" : ""}"
+            data-section="${section[0]}"
+        >
+            ${section[1]}
+        </button>
+    `).join("");
+
+    nav.querySelectorAll("[data-section]").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            state.section = button.dataset.section;
+
+            render();
+        });
+
+    });
+}
+
+
+/* =========================================================
+   RENDER PRINCIPAL
+   ========================================================= */
+
+function render() {
+
+    saveDatabase();
+
+    renderNavigation();
+
+    switch (state.section) {
+
+        case "calendar":
+            renderCalendar();
+            break;
+
+        case "day":
+            renderDay();
+            break;
+
+        case "students":
+            renderStudents();
+            break;
+
+        case "payments":
+            renderPayments();
+            break;
+
+        case "finances":
+            renderFinances();
+            break;
+
+        case "data":
+            renderData();
+            break;
+
+    }
+}
+
+
+/* =========================================================
+   CALENDARIO
+   ========================================================= */
+
+function renderCalendar() {
+
+    const content = document.getElementById("content");
+
+    const year = state.currentMonth.getFullYear();
+    const month = state.currentMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    /*
+       Convertimos domingo=0 a lunes=0.
+    */
+
+    const firstWeekday =
+        (firstDay.getDay() + 6) % 7;
+
+    const selectedKey =
+        dateKeyFromDate(state.selectedDate);
+
+    let html = `
+        <div class="dashboard">
+
+            <div class="stat">
+                <div class="stat-label">Clases hoy</div>
+                <div class="stat-value">
+                    ${db.lessons.filter(l => l.date === todayKey()).length}
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Alumnos</div>
+                <div class="stat-value">
+                    ${db.students.length}
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Pendiente</div>
+                <div class="stat-value">
+                    ${formatMoney(getTotalPending())}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="calendar-header">
+
+                <button
+                    class="btn-secondary"
+                    id="previousMonth"
+                >
+                    ◀
+                </button>
+
+                <div class="calendar-title">
+                    ${state.currentMonth.toLocaleDateString(
+                        "es-AR",
+                        {
+                            month: "long",
+                            year: "numeric"
+                        }
+                    )}
+                </div>
+
+                <button
+                    class="btn-secondary"
+                    id="nextMonth"
+                >
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="weekdays">
+                ${["L","M","X","J","V","S","D"]
+                    .map(day => `<div class="weekday">${day}</div>`)
+                    .join("")
+                }
+            </div>
+
+            <div class="calendar-grid">
+    `;
+
+    for (let i = 0; i < firstWeekday; i++) {
+        html += `<div></div>`;
+    }
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+
+        const key = dateKey(year, month, day);
+
+        const lessons = db.lessons
+            .filter(lesson => lesson.date === key)
+            .sort((a, b) =>
+                a.time.localeCompare(b.time)
+            );
+
+        const classes = [
+            "calendar-day"
+        ];
+
+        if (key === todayKey()) {
+            classes.push("today");
+        }
+
+        if (key === selectedKey) {
+            classes.push("selected");
+        }
+
+        html += `
+            <div
+                class="${classes.join(" ")}"
+                data-date="${key}"
+            >
+
+                <div class="day-number">
+                    ${day}${key === todayKey() ? ' <span class="today-tag">hoy</span>' : ""}
+                </div>
+
+                ${lessons.slice(0, 3).map(lesson => {
+
+                    const student = getStudent(lesson.studentId);
+
+                    let statusClass = "pending";
+
+                    if (lesson.status === "attended") {
+                        statusClass = "attended";
+                    }
+
+                    if (lesson.status === "absent") {
+                        statusClass = "absent";
+                    }
+
+                    return `
+                        <div class="lesson-mini ${statusClass}">
+                            ${escapeHTML(lesson.time)}
+                            ${student ? " " + escapeHTML(student.name) : ""}
+                        </div>
+                    `;
+
+                }).join("")}
+
+                ${
+                    lessons.length > 3
+                    ? `<div class="small muted">+${lessons.length - 3} más</div>`
+                    : ""
+                }
+
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-title">
+                Acciones rápidas
+            </div>
+
+            <div class="small" style="margin-bottom:10px">
+                Precio por hora (predeterminado):
+                <b>${formatMoney(getHourlyRate())}</b>
+            </div>
+
+            <div class="actions" style="margin:0">
+                <button
+                    class="btn"
+                    id="newClassCalendar"
+                >
+                    + Agregar clase
+                </button>
+                <button
+                    class="btn-secondary"
+                    id="editHourlyRateCalendar"
+                >
+                    Cambiar precio/hora
+                </button>
+            </div>
+
+        </div>
+    `;
+
+    content.innerHTML = html;
+
+    document
+        .getElementById("editHourlyRateCalendar")
+        .addEventListener("click", openHourlyRateEditor);
+
+    document
+        .getElementById("previousMonth")
+        .addEventListener("click", () => {
+
+            state.currentMonth = new Date(
+                year,
+                month - 1,
+                1
+            );
+
+            render();
+
+        });
+
+
+    document
+        .getElementById("nextMonth")
+        .addEventListener("click", () => {
+
+            state.currentMonth = new Date(
+                year,
+                month + 1,
+                1
+            );
+
+            render();
+
+        });
+
+
+    document
+        .querySelectorAll("[data-date]")
+        .forEach(dayElement => {
+
+            dayElement.addEventListener("click", () => {
+
+                state.selectedDate =
+                    dateFromKey(dayElement.dataset.date);
+
+                state.section = "day";
+
+                render();
+
+            });
+
+        });
+
+
+    document
+        .getElementById("newClassCalendar")
+        .addEventListener("click", () => {
+
+            openLessonModal(
+                dateKeyFromDate(state.selectedDate)
+            );
+
+        });
+}
+
+
+/* =========================================================
+   AGENDA DEL DÍA
+   ========================================================= */
+
+function renderDay() {
+
+    const content = document.getElementById("content");
+
+    const key =
+        dateKeyFromDate(state.selectedDate);
+
+    const lessons = db.lessons
+        .filter(lesson => lesson.date === key)
+        .sort((a, b) =>
+            a.time.localeCompare(b.time)
+        );
+
+    let html = `
+
+        <div class="card">
+
+            <div class="calendar-header">
+
+                <button
+                    class="btn-secondary"
+                    id="previousDay"
+                >
+                    ◀
+                </button>
+
+                <div class="calendar-title">
+                    ${escapeHTML(formatDate(state.selectedDate))}
+                </div>
+
+                <button
+                    class="btn-secondary"
+                    id="nextDay"
+                >
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="small" style="margin:10px 0 8px">
+                Precio por hora (predeterminado):
+                <b>${formatMoney(getHourlyRate())}</b>
+            </div>
+
+            <div class="actions" style="margin:0">
+                <button
+                    class="btn"
+                    id="newClassDay"
+                >
+                    + Nueva clase
+                </button>
+                <button
+                    class="btn-secondary"
+                    id="editHourlyRateDay"
+                >
+                    Cambiar precio/hora
+                </button>
+            </div>
+
+        </div>
+    `;
+
+    const isToday = key === todayKey();
+    const unmarked = lessons.filter(
+        l => (l.status || "pending") === "pending"
+    );
+    const withPhone = lessons.filter(l => {
+        const s = getStudent(l.studentId);
+        return s && s.phone;
+    });
+
+    if (lessons.length > 0) {
+        html += `
+            <div class="card" style="padding:12px 14px">
+                <div class="small" style="margin:0 0 8px">
+                    ${lessons.length} clase(s)
+                    · <b>${unmarked.length}</b> sin marcar
+                    · ${lessons.filter(l => l.status === "attended").length} asistió
+                    · ${lessons.filter(l => l.status === "absent").length} faltó
+                </div>
+                <div class="actions" style="margin:0">
+                    ${
+                        unmarked.length > 0
+                        ? `
+                            <button class="btn-success" id="markAllAttendedDay">
+                                Marcar todos como asistió
+                            </button>
+                        `
+                        : ""
+                    }
+                    ${
+                        withPhone.length > 0
+                        ? `
+                            <button class="btn-secondary" id="remindAllWhatsApp">
+                                Recordar por WhatsApp
+                            </button>
+                        `
+                        : ""
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+
+    if (lessons.length === 0) {
+
+        html += `
+            <div class="card empty">
+                No hay clases para este día.
+            </div>
+        `;
+
+    } else {
+
+        html += lessons.map(lesson => {
+
+            const student =
+                getStudent(lesson.studentId);
+
+            let statusText = "Pendiente";
+            let statusClass = "pending";
+
+            if (lesson.status === "attended") {
+                statusText = "Asistió";
+                statusClass = "attended";
+            }
+
+            if (lesson.status === "absent") {
+                statusText = "Faltó";
+                statusClass = "absent";
+            }
+
+            return `
+
+                <div class="lesson">
+
+                    <div class="lesson-main">
+
+                        <div class="lesson-time">
+                            ${escapeHTML(lesson.time)}
+                        </div>
+
+                        <div style="flex:1">
+
+                            <div class="lesson-name">
+                                ${student
+                                    ? escapeHTML(student.name)
+                                    : "Alumno eliminado"
+                                }
+                            </div>
+
+                            <div class="lesson-info">
+                                ${lesson.duration} min ·
+                                ${formatMoney(lesson.price)}
+                            </div>
+
+                        </div>
+
+                        <span class="status ${statusClass}">
+                            ${statusText}
+                        </span>
+
+                    </div>
+
+                    <div class="actions">
+
+                        <button
+                            class="btn-success"
+                            data-attend="${lesson.id}"
+                        >
+                            Asistió
+                        </button>
+
+                        <button
+                            class="btn-warning"
+                            data-absent="${lesson.id}"
+                        >
+                            Faltó
+                        </button>
+
+                        <button
+                            class="btn-secondary"
+                            data-edit-lesson="${lesson.id}"
+                        >
+                            Editar
+                        </button>
+
+                        <button
+                            class="btn-danger"
+                            data-delete-lesson="${lesson.id}"
+                        >
+                            Eliminar
+                        </button>
+
+                        ${
+                            student && student.phone
+                            ? `
+                                <button
+                                    class="btn-secondary"
+                                    data-whatsapp="${lesson.id}"
+                                >
+                                    WhatsApp
+                                </button>
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    }
+
+    content.innerHTML = html;
+
+
+    document
+        .getElementById("previousDay")
+        .addEventListener("click", () => {
+
+            state.selectedDate = new Date(
+                state.selectedDate.getFullYear(),
+                state.selectedDate.getMonth(),
+                state.selectedDate.getDate() - 1,
+                12
+            );
+
+            render();
+
+        });
+
+
+    document
+        .getElementById("nextDay")
+        .addEventListener("click", () => {
+
+            state.selectedDate = new Date(
+                state.selectedDate.getFullYear(),
+                state.selectedDate.getMonth(),
+                state.selectedDate.getDate() + 1,
+                12
+            );
+
+            render();
+
+        });
+
+
+    document
+        .getElementById("newClassDay")
+        .addEventListener("click", () => {
+
+            openLessonModal(key);
+
+        });
+
+
+    document
+        .getElementById("editHourlyRateDay")
+        .addEventListener("click", openHourlyRateEditor);
+
+
+    const markAllBtn = document.getElementById("markAllAttendedDay");
+    if (markAllBtn) {
+        markAllBtn.addEventListener("click", () => {
+            const pending = getUnmarkedLessonsForDate(key);
+            if (pending.length === 0) {
+                return;
+            }
+            const ok = confirm(
+                `¿Marcar ${pending.length} clase(s) de este día como asistió?`
+            );
+            if (!ok) {
+                return;
+            }
+            pending.forEach(l => {
+                l.status = "attended";
+            });
+            saveDatabase();
+            render();
+            showToast(
+                pending.length + " clase(s) marcadas como asistió"
+            );
+        });
+    }
+
+    const remindAllBtn = document.getElementById("remindAllWhatsApp");
+    if (remindAllBtn) {
+        remindAllBtn.addEventListener("click", () => {
+            const targets = lessons
+                .map(l => ({
+                    lesson: l,
+                    student: getStudent(l.studentId)
+                }))
+                .filter(x => x.student && x.student.phone);
+
+            if (targets.length === 0) {
+                alert("Ningún alumno de este día tiene WhatsApp.");
+                return;
+            }
+
+            const ok = confirm(
+                `Se abrirán ${targets.length} chat(s) de WhatsApp (uno por alumno con teléfono).\n\n` +
+                `En el celular conviene confirmar cada envío.\n\n¿Continuar?`
+            );
+            if (!ok) {
+                return;
+            }
+
+            targets.forEach((item, index) => {
+                const when =
+                    item.lesson.date === todayKey()
+                        ? `hoy a las ${item.lesson.time}`
+                        : `el ${formatLessonDate(item.lesson.date)} a las ${item.lesson.time}`;
+                const message =
+                    `Hola ${item.student.name}, te recuerdo tu clase ${when}.`;
+                const phone = normalizePhone(item.student.phone);
+                setTimeout(() => {
+                    window.open(
+                        `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                        "_blank"
+                    );
+                }, index * 600);
+            });
+        });
+    }
+
+
+    document
+        .querySelectorAll("[data-attend]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const lesson =
+                    db.lessons.find(
+                        x => x.id === button.dataset.attend
+                    );
+
+                if (!lesson) {
+                    return;
+                }
+
+                if (lesson.date > todayKey()) {
+                    const ok = confirm(
+                        "Esta clase es de una fecha futura.\n\n" +
+                        "¿Marcar como asistió de todos modos?"
+                    );
+                    if (!ok) {
+                        return;
+                    }
+                }
+
+                lesson.status = "attended";
+                saveDatabase();
+                render();
+                showToast("Marcada como asistió");
+
+            });
+
+        });
+
+
+    document
+        .querySelectorAll("[data-absent]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const lesson =
+                    db.lessons.find(
+                        x => x.id === button.dataset.absent
+                    );
+
+                if (!lesson) {
+                    return;
+                }
+
+                const wasAttended = lesson.status === "attended";
+                lesson.status = "absent";
+                saveDatabase();
+                render();
+
+                if (
+                    wasAttended &&
+                    getStudentCredit(lesson.studentId) > 0
+                ) {
+                    showToast(
+                        "Falta registrada. Si había pagos, quedan a favor."
+                    );
+                } else {
+                    showToast("Marcada como faltó");
+                }
+
+            });
+
+        });
+
+
+    document
+        .querySelectorAll("[data-edit-lesson]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                openLessonModal(
+                    key,
+                    button.dataset.editLesson
+                );
+
+            });
+
+        });
+
+
+    document
+        .querySelectorAll("[data-delete-lesson]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                if (
+                    !confirm(
+                        "¿Querés eliminar esta clase?"
+                    )
+                ) {
+                    return;
+                }
+
+                db.lessons =
+                    db.lessons.filter(
+                        lesson =>
+                            lesson.id !== button.dataset.deleteLesson
+                    );
+
+                saveDatabase();
+                render();
+
+            });
+
+        });
+
+
+    document
+        .querySelectorAll("[data-whatsapp]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const lesson =
+                    db.lessons.find(
+                        x => x.id === button.dataset.whatsapp
+                    );
+
+                const student =
+                    lesson
+                        ? getStudent(lesson.studentId)
+                        : null;
+
+                if (!student || !student.phone) {
+                    alert(
+                        "Este alumno no tiene un número de WhatsApp."
+                    );
+                    return;
+                }
+
+                const when =
+                    lesson.date === todayKey()
+                        ? `hoy a las ${lesson.time}`
+                        : `el ${formatLessonDate(lesson.date)} a las ${lesson.time}`;
+
+                const message =
+                    `Hola ${student.name}, te recuerdo tu clase ${when}.`;
+
+                const phone =
+                    normalizePhone(student.phone);
+
+                window.open(
+                    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                    "_blank"
+                );
+
+            });
+
+        });
+
+}
+
+
+/* =========================================================
+   MODAL DE CLASE
+   ========================================================= */
+
+function openLessonModal(dateKeyValue, lessonId = null) {
+
+    if (db.students.length === 0) {
+
+        alert(
+            "Primero tenés que cargar al menos un alumno."
+        );
+
+        state.section = "students";
+        render();
+
+        return;
+    }
+
+
+    const editingLesson =
+        lessonId
+            ? db.lessons.find(
+                lesson => lesson.id === lessonId
+            )
+            : null;
+
+
+    const defaultStudent =
+        editingLesson
+            ? editingLesson.studentId
+            : db.students[0].id;
+
+
+    const defaultTime =
+        editingLesson
+            ? editingLesson.time
+            : "16:00";
+
+
+    const defaultDuration =
+        editingLesson
+            ? editingLesson.duration
+            : 60;
+
+
+    // Nueva clase: por defecto modo hora + tarifa global
+    // Edición: respeta el modo guardado (clases viejas = por clase)
+    const defaultPriceMode =
+        editingLesson
+            ? (editingLesson.priceMode === "hour" ? "hour" : "class")
+            : "hour";
+
+    const defaultHourlyRate =
+        editingLesson && editingLesson.priceMode === "hour"
+            ? (Number(editingLesson.hourlyRate) || getHourlyRate())
+            : getHourlyRate();
+
+    const defaultClassPrice =
+        editingLesson
+            ? (Number(editingLesson.price) || 0)
+            : Math.round(
+                getHourlyRate() *
+                ((Number(defaultDuration) || 60) / 60)
+            );
+
+
+    const modal =
+        document.getElementById("modal");
+
+
+    modal.innerHTML = `
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                ${editingLesson
+                    ? "Editar clase"
+                    : "Nueva clase"
+                }
+            </div>
+
+            <button
+                class="close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Fecha</label>
+
+            <input
+                type="date"
+                id="lessonDate"
+                value="${dateKeyValue}"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Alumno</label>
+
+            <select id="lessonStudent">
+
+                ${(editingLesson
+                    ? db.students
+                    : getActiveStudents().length
+                        ? getActiveStudents()
+                        : db.students
+                ).map(student => `
+                    <option
+                        value="${student.id}"
+                        ${student.id === defaultStudent ? "selected" : ""}
+                    >
+                        ${escapeHTML(student.name)}${student.inactive ? " (inactivo)" : ""}
+                    </option>
+                `).join("")}
+
+            </select>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>Hora</label>
+
+                <input
+                    type="time"
+                    id="lessonTime"
+                    value="${defaultTime}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Duración</label>
+
+                <select id="lessonDuration">
+
+                    ${[30, 60, 90, 120].map(minutes => `
+                        <option
+                            value="${minutes}"
+                            ${Number(defaultDuration) === minutes ? "selected" : ""}
+                        >
+                            ${minutes} minutos
+                        </option>
+                    `).join("")}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+            <label>Cómo calcular el precio</label>
+            <select id="lessonPriceMode">
+                <option value="hour" ${
+                    defaultPriceMode === "hour" ? "selected" : ""
+                }>
+                    Precio por hora × duración
+                </option>
+                <option value="class" ${
+                    defaultPriceMode === "class" ? "selected" : ""
+                }>
+                    Precio por clase (fijo)
+                </option>
+            </select>
+            <div class="small muted" style="margin-top:6px">
+                La tarifa horaria predeterminada se cambia desde Mes o Día.
+            </div>
+        </div>
+
+        <div class="form-group" id="lessonPriceClassGroup">
+            <label>Precio de esta clase ($)</label>
+            <input
+                type="number"
+                id="lessonPrice"
+                min="0"
+                step="1"
+                value="${Number(defaultClassPrice) || 0}"
+            >
+        </div>
+
+        <div class="form-group" id="lessonPriceHourGroup" style="display:none">
+            <label>Precio por hora ($)</label>
+            <input
+                type="number"
+                id="lessonHourlyRate"
+                min="0"
+                step="1"
+                value="${Number(defaultHourlyRate) || 0}"
+            >
+            <div class="small muted" id="lessonPricePreview" style="margin-top:6px">
+                Total de la clase: —
+            </div>
+        </div>
+
+        ${
+            editingLesson
+            ? ""
+            : `
+        <div class="form-group">
+            <label>Repetir las próximas semanas</label>
+            <select id="lessonRepeatWeeks">
+                <option value="0" selected>No repetir (solo esta fecha)</option>
+                <option value="1">1 semana más</option>
+                <option value="2">2 semanas más</option>
+                <option value="3">3 semanas más</option>
+                <option value="4">4 semanas más</option>
+                <option value="6">6 semanas más</option>
+                <option value="8">8 semanas más</option>
+            </select>
+            <div class="small muted" style="margin-top:6px">
+                Crea la misma clase (alumno, hora, duración, precio) en las semanas siguientes.
+            </div>
+        </div>
+            `
+        }
+
+
+        <div class="actions">
+
+            <button
+                class="btn-secondary"
+                id="cancelLesson"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn"
+                id="saveLesson"
+            >
+                ${editingLesson
+                    ? "Guardar cambios"
+                    : "Agregar clase"
+                }
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+
+    function getLessonPriceMode() {
+        return document.getElementById("lessonPriceMode").value === "hour"
+            ? "hour"
+            : "class";
+    }
+
+
+    function calcHourlyTotal() {
+        const duration = Number(
+            document.getElementById("lessonDuration").value
+        ) || 0;
+        const rate = Number(
+            document.getElementById("lessonHourlyRate").value
+        ) || 0;
+        // Redondeo al peso entero más cercano
+        return Math.round(rate * (duration / 60));
+    }
+
+
+    function updatePriceModeUI() {
+        const mode = getLessonPriceMode();
+        const classGroup = document.getElementById("lessonPriceClassGroup");
+        const hourGroup = document.getElementById("lessonPriceHourGroup");
+        const preview = document.getElementById("lessonPricePreview");
+
+        if (mode === "hour") {
+            classGroup.style.display = "none";
+            hourGroup.style.display = "";
+            const total = calcHourlyTotal();
+            preview.textContent =
+                "Total de la clase: " + formatMoney(total) +
+                " (" +
+                document.getElementById("lessonDuration").value +
+                " min)";
+            document.getElementById("lessonPrice").value = total;
+        } else {
+            classGroup.style.display = "";
+            hourGroup.style.display = "none";
+        }
+    }
+
+
+    document
+        .getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("cancelLesson")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("lessonPriceMode")
+        .addEventListener("change", updatePriceModeUI);
+
+
+    document
+        .getElementById("lessonDuration")
+        .addEventListener("change", updatePriceModeUI);
+
+
+    document
+        .getElementById("lessonHourlyRate")
+        .addEventListener("input", updatePriceModeUI);
+
+
+    /*
+        Al cambiar de alumno, proponemos
+        automáticamente su precio habitual.
+    */
+
+    document
+        .getElementById("lessonStudent")
+        .addEventListener("change", event => {
+
+            const student =
+                getStudent(event.target.value);
+
+            if (student && !editingLesson) {
+                // En modo clase: precio habitual del alumno
+                // En modo hora: se mantiene la tarifa horaria global
+                const habitual = Number(student.price) || 0;
+                if (habitual > 0) {
+                    document.getElementById("lessonPrice").value = habitual;
+                }
+                updatePriceModeUI();
+            }
+
+        });
+
+
+    updatePriceModeUI();
+
+
+    document
+        .getElementById("saveLesson")
+        .addEventListener("click", () => {
+
+            const date =
+                document.getElementById("lessonDate").value;
+
+            const studentId =
+                document.getElementById("lessonStudent").value;
+
+            const time =
+                document.getElementById("lessonTime").value;
+
+            const duration =
+                Number(
+                    document.getElementById("lessonDuration").value
+                );
+
+            const priceMode = getLessonPriceMode();
+            let hourlyRate = null;
+            let price;
+
+            if (priceMode === "hour") {
+                hourlyRate = Number(
+                    document.getElementById("lessonHourlyRate").value
+                );
+                if (!Number.isFinite(hourlyRate) || hourlyRate < 0) {
+                    alert("El precio por hora no es válido.");
+                    return;
+                }
+                price = Math.round(hourlyRate * (duration / 60));
+            } else {
+                price = Number(
+                    document.getElementById("lessonPrice").value
+                );
+            }
+
+
+            if (!date) {
+                alert("Seleccioná una fecha.");
+                return;
+            }
+
+            if (!studentId) {
+                alert("Seleccioná un alumno.");
+                return;
+            }
+
+            if (!time) {
+                alert("Seleccioná una hora.");
+                return;
+            }
+
+            if (!Number.isFinite(price) || price < 0) {
+                alert("El precio no es válido.");
+                return;
+            }
+
+
+            /*
+                Máximo 4 alumnos simultáneos.
+                Al editar excluimos la propia clase.
+                Al crear con repetición se valida fecha por fecha.
+            */
+
+            if (editingLesson) {
+                const simultaneous =
+                    db.lessons.filter(lesson =>
+                        lesson.date === date &&
+                        lesson.time === time &&
+                        lesson.id !== lessonId
+                    ).length;
+
+                if (simultaneous >= 4) {
+                    alert(
+                        "Ya hay 4 alumnos en ese horario."
+                    );
+                    return;
+                }
+            }
+
+
+            const previousPrice = editingLesson
+                ? Number(editingLesson.price) || 0
+                : null;
+
+            if (editingLesson) {
+
+                editingLesson.date = date;
+                editingLesson.studentId = studentId;
+                editingLesson.time = time;
+                editingLesson.duration = duration;
+                editingLesson.price = price;
+                editingLesson.priceMode = priceMode;
+                if (priceMode === "hour") {
+                    editingLesson.hourlyRate = hourlyRate;
+                } else {
+                    delete editingLesson.hourlyRate;
+                }
+
+            } else {
+
+                const repeatWeeks = Number(
+                    document.getElementById("lessonRepeatWeeks")?.value || 0
+                );
+
+                const datesToCreate = [date];
+                for (let w = 1; w <= repeatWeeks; w++) {
+                    datesToCreate.push(addWeeksToDateKey(date, w));
+                }
+
+                let created = 0;
+                let skipped = 0;
+
+                datesToCreate.forEach(d => {
+                    const simultaneous = db.lessons.filter(lesson =>
+                        lesson.date === d &&
+                        lesson.time === time
+                    ).length;
+
+                    if (simultaneous >= 4) {
+                        skipped++;
+                        return;
+                    }
+
+                    const lessonObj = {
+                        id: generateId("lesson"),
+                        date: d,
+                        studentId,
+                        time,
+                        duration,
+                        price,
+                        priceMode,
+                        status: "pending"
+                    };
+                    if (priceMode === "hour") {
+                        lessonObj.hourlyRate = hourlyRate;
+                    }
+
+                    db.lessons.push(lessonObj);
+                    created++;
+                });
+
+                if (created === 0) {
+                    alert(
+                        "No se pudo crear ninguna clase (horario lleno)."
+                    );
+                    return;
+                }
+
+                saveDatabase();
+                closeModal();
+
+                state.selectedDate = dateFromKey(date);
+                state.currentMonth = new Date(
+                    state.selectedDate.getFullYear(),
+                    state.selectedDate.getMonth(),
+                    1
+                );
+                state.section = "day";
+                render();
+
+                let msg = created === 1
+                    ? "Clase agregada"
+                    : created + " clases agregadas";
+                if (skipped > 0) {
+                    msg += ` (${skipped} omitida(s) por horario lleno)`;
+                }
+                showToast(msg);
+                return;
+            }
+
+
+            saveDatabase();
+            closeModal();
+
+            state.selectedDate =
+                dateFromKey(date);
+
+            state.currentMonth =
+                new Date(
+                    state.selectedDate.getFullYear(),
+                    state.selectedDate.getMonth(),
+                    1
+                );
+
+
+            state.section = "day";
+
+            render();
+
+            if (
+                editingLesson &&
+                previousPrice !== null &&
+                previousPrice !== price &&
+                editingLesson.status === "attended"
+            ) {
+                showToast(
+                    "Clase actualizada. El saldo se recalculó con el nuevo precio."
+                );
+            } else {
+                showToast(
+                    editingLesson
+                        ? "Clase actualizada"
+                        : "Clase agregada"
+                );
+            }
+
+        });
+
+}
+
+
+function openModal() {
+
+    document
+        .getElementById("modalBackdrop")
+        .classList.add("open");
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("modalBackdrop")
+        .classList.remove("open");
+}
+
+
+document
+    .getElementById("modalBackdrop")
+    .addEventListener("click", event => {
+
+        if (
+            event.target.id === "modalBackdrop"
+        ) {
+            closeModal();
+        }
+
+    });
+
+
+/* =========================================================
+   ALUMNOS
+   ========================================================= */
+
+function renderStudents() {
+
+    const content =
+        document.getElementById("content");
+
+
+    content.innerHTML = `
+
+        <div class="card">
+
+            <div class="card-title">
+                Alumnos
+            </div>
+
+            <input
+                type="search"
+                id="studentSearch"
+                placeholder="Buscar alumno..."
+            >
+
+            <button
+                class="btn"
+                id="newStudent"
+                style="margin-top:10px"
+            >
+                + Agregar alumno
+            </button>
+
+        </div>
+
+        <div id="studentsList"></div>
+
+    `;
+
+
+    renderStudentList("");
+
+
+    document
+        .getElementById("studentSearch")
+        .addEventListener("input", event => {
+
+            renderStudentList(
+                event.target.value
+                    .trim()
+                    .toLowerCase()
+            );
+
+        });
+
+
+    document
+        .getElementById("newStudent")
+        .addEventListener("click", () => {
+
+            openStudentModal();
+
+        });
+
+}
+
+
+function renderStudentList(search) {
+
+    const list =
+        document.getElementById("studentsList");
+
+
+    const students =
+        db.students.filter(student =>
+            student.name
+                .toLowerCase()
+                .includes(search)
+        );
+
+
+    if (students.length === 0) {
+
+        list.innerHTML = `
+            <div class="card empty">
+                ${
+                    db.students.length === 0
+                    ? "Todavía no hay alumnos."
+                    : "No se encontraron alumnos."
+                }
+            </div>
+        `;
+
+        return;
+    }
+
+
+    list.innerHTML =
+        students.map(student => {
+
+            const bal = getBalanceDisplay(student.id);
+
+            return `
+
+                <div class="student-card">
+
+                    <div class="student-header">
+
+                        <div>
+
+                            <div class="student-name">
+                                ${escapeHTML(student.name)}
+                                ${
+                                    student.inactive
+                                    ? `<span class="small muted" style="font-weight:500"> · inactivo</span>`
+                                    : ""
+                                }
+                            </div>
+
+                            <div class="small muted">
+                                ${
+                                    student.phone
+                                    ? escapeHTML(student.phone)
+                                    : "Sin WhatsApp"
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="balance ${bal.css}">
+                            ${bal.text}
+                        </div>
+
+                    </div>
+
+
+                    <div class="small muted" style="margin-top:6px">
+                        Precio habitual:
+                        ${formatMoney(student.price)}
+                    </div>
+
+
+                    <div class="actions">
+
+                        <button
+                            class="btn-secondary"
+                            data-edit-student="${student.id}"
+                        >
+                            Editar
+                        </button>
+
+                        <button
+                            class="btn-secondary"
+                            data-pdf-student="${student.id}"
+                        >
+                            PDF
+                        </button>
+
+                        <button
+                            class="btn-secondary"
+                            data-clear-until="${student.id}"
+                        >
+                            Borrar hasta…
+                        </button>
+
+                        ${
+                            student.phone
+                            ? `
+                                <button
+                                    class="btn-secondary"
+                                    data-student-whatsapp="${student.id}"
+                                >
+                                    WhatsApp
+                                </button>
+                            `
+                            : ""
+                        }
+
+                        <button
+                            class="btn-danger"
+                            data-delete-student="${student.id}"
+                        >
+                            Eliminar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+
+    list
+        .querySelectorAll("[data-edit-student]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                openStudentModal(
+                    button.dataset.editStudent
+                );
+
+            });
+
+        });
+
+
+    list
+        .querySelectorAll("[data-pdf-student]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                openStudentPDF(
+                    button.dataset.pdfStudent
+                );
+
+            });
+
+        });
+
+
+    list
+        .querySelectorAll("[data-clear-until]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                openClearUntilModal(
+                    button.dataset.clearUntil
+                );
+
+            });
+
+        });
+
+
+    list
+        .querySelectorAll("[data-delete-student]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                deleteStudent(
+                    button.dataset.deleteStudent
+                );
+
+            });
+
+        });
+
+
+    list
+        .querySelectorAll("[data-student-whatsapp]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const student =
+                    getStudent(
+                        button.dataset.studentWhatsapp
+                    );
+
+                if (!student || !student.phone) {
+                    return;
+                }
+
+                const phone =
+                    normalizePhone(student.phone);
+
+                window.open(
+                    `https://wa.me/${phone}`,
+                    "_blank"
+                );
+
+            });
+
+        });
+
+}
+
+
+function openStudentModal(studentId = null) {
+
+    const editingStudent =
+        studentId
+            ? getStudent(studentId)
+            : null;
+
+
+    const modal =
+        document.getElementById("modal");
+
+
+    modal.innerHTML = `
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                ${
+                    editingStudent
+                    ? "Editar alumno"
+                    : "Nuevo alumno"
+                }
+            </div>
+
+            <button
+                class="close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Nombre</label>
+
+            <input
+                id="studentName"
+                value="${editingStudent
+                    ? escapeHTML(editingStudent.name)
+                    : ""
+                }"
+                placeholder="Nombre del alumno"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>WhatsApp</label>
+
+            <input
+                id="studentPhone"
+                value="${editingStudent
+                    ? escapeHTML(editingStudent.phone || "")
+                    : ""
+                }"
+                placeholder="Ej.: 549379..."
+                inputmode="tel"
+            >
+
+            <div class="small muted">
+                Podés escribirlo con o sin +, espacios o guiones.
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Precio habitual ($)</label>
+
+            <input
+                id="studentPrice"
+                type="number"
+                min="0"
+                step="1"
+                value="${
+                    editingStudent
+                    ? Number(editingStudent.price) || 0
+                    : 10000
+                }"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Observaciones</label>
+
+            <textarea
+                id="studentNotes"
+                placeholder="Opcional"
+            >${
+                editingStudent
+                ? escapeHTML(editingStudent.notes || "")
+                : ""
+            }</textarea>
+
+        </div>
+
+
+        <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:500">
+                <input
+                    type="checkbox"
+                    id="studentInactive"
+                    ${editingStudent && editingStudent.inactive ? "checked" : ""}
+                    style="width:auto;margin:0"
+                >
+                Alumno inactivo
+            </label>
+            <div class="small muted" style="margin-top:6px">
+                No aparece al crear clases nuevas. Sigue en la lista y conserva historial.
+            </div>
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn-secondary"
+                id="cancelStudent"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn"
+                id="saveStudent"
+            >
+                Guardar
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+
+    document
+        .getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("cancelStudent")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("saveStudent")
+        .addEventListener("click", () => {
+
+            const name =
+                document
+                    .getElementById("studentName")
+                    .value
+                    .trim();
+
+            const phone =
+                document
+                    .getElementById("studentPhone")
+                    .value
+                    .trim();
+
+            const price =
+                Number(
+                    document
+                        .getElementById("studentPrice")
+                        .value
+                );
+
+            const notes =
+                document
+                    .getElementById("studentNotes")
+                    .value
+                    .trim();
+
+            const inactive =
+                document.getElementById("studentInactive").checked;
+
+
+            if (!name) {
+
+                alert(
+                    "Escribí el nombre del alumno."
+                );
+
+                return;
+            }
+
+
+            if (!Number.isFinite(price) || price < 0) {
+
+                alert(
+                    "El precio habitual no es válido."
+                );
+
+                return;
+            }
+
+
+            if (editingStudent) {
+
+                editingStudent.name = name;
+                editingStudent.phone = phone;
+                editingStudent.price = price;
+                editingStudent.notes = notes;
+                editingStudent.inactive = inactive;
+
+            } else {
+
+                db.students.push({
+
+                    id: generateId("student"),
+
+                    name,
+
+                    phone,
+
+                    price,
+
+                    notes,
+
+                    liquidatedAmount: 0,
+
+                    inactive: inactive
+
+                });
+
+            }
+
+
+            saveDatabase();
+            closeModal();
+            render();
+
+            showToast(
+                editingStudent
+                ? "Alumno actualizado"
+                : "Alumno agregado"
+            );
+
+        });
+
+}
+
+
+function deleteStudent(studentId) {
+
+    const student =
+        getStudent(studentId);
+
+    if (!student) {
+        return;
+    }
+
+
+    const hasLessons =
+        db.lessons.some(
+            lesson =>
+                lesson.studentId === studentId
+        );
+
+
+    const hasPayments =
+        db.payments.some(
+            payment =>
+                payment.studentId === studentId
+        );
+
+
+    if (hasLessons || hasPayments) {
+
+        alert(
+            "No se puede eliminar este alumno porque tiene clases o pagos registrados. Esto evita perder información histórica."
+        );
+
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `¿Eliminar a ${student.name}?`
+        )
+    ) {
+        return;
+    }
+
+
+    db.students =
+        db.students.filter(
+            s => s.id !== studentId
+        );
+
+
+    saveDatabase();
+    render();
+
+    showToast("Alumno eliminado");
+}
+
+
+/* =========================================================
+   PAGOS
+   ========================================================= */
+
+function renderPayments() {
+
+    const content =
+        document.getElementById("content");
+
+
+    const totalPending =
+        getTotalPending();
+
+
+    const totalPaid =
+        db.payments.reduce(
+            (sum, payment) =>
+                sum + Number(payment.amount || 0),
+            0
+        );
+
+
+    content.innerHTML = `
+
+        <div class="dashboard">
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Cobrado histórico
+                </div>
+
+                <div class="stat-value">
+                    ${formatMoney(totalPaid)}
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Pendiente
+                </div>
+
+                <div class="stat-value">
+                    ${formatMoney(totalPending)}
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Pagos registrados
+                </div>
+
+                <div class="stat-value">
+                    ${db.payments.length}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <button
+                class="btn"
+                id="newPayment"
+            >
+                + Registrar pago
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Saldo por alumno
+            </div>
+
+            <p class="small muted" style="margin-top:-4px;margin-bottom:12px">
+                El saldo cuenta solo clases <b>asistidas</b>.
+                Podés registrar <b>pago adelantado</b> (queda a favor hasta nuevas asistencias).
+                Los pagos se aplican desde la clase más antigua hacia adelante.
+                Desglose mes a mes en <b>Finanzas</b>.
+            </p>
+
+            ${
+                db.students.length === 0
+
+                ? `
+                    <div class="empty">
+                        No hay alumnos.
+                    </div>
+                `
+
+                : db.students.map(student => {
+
+                    const balance =
+                        getStudentBalance(student.id);
+                    const credit =
+                        getStudentCredit(student.id);
+                    const bal = getBalanceDisplay(student.id);
+
+                    const pendingLessons =
+                        getStudentPendingLessons(student.id);
+
+                    return `
+
+                        <div class="student-balance-block">
+
+                            <div class="student-balance-header">
+
+                                <div>
+                                    <b>${escapeHTML(student.name)}</b>
+                                </div>
+
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <div class="balance ${bal.css}">
+                                        ${bal.text}
+                                    </div>
+                                    <button
+                                        class="btn-secondary"
+                                        style="padding:6px 10px;font-size:12px;min-width:auto"
+                                        data-pdf-student="${student.id}"
+                                    >
+                                        PDF
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            ${
+                                pendingLessons.length === 0
+                                ? `
+                                    <div class="small muted" style="margin-top:6px">
+                                        ${
+                                            credit > 0
+                                            ? "Al día · crédito a favor para próximas asistencias"
+                                            : "Al día · sin clases con saldo"
+                                        }
+                                    </div>
+                                `
+                                : `
+                                    <div class="pending-lessons">
+                                        ${pendingLessons.map(lesson => `
+                                            <div class="pending-lesson-item">
+                                                <div class="pending-lesson-info">
+                                                    <div>
+                                                        ${formatLessonDate(lesson.date)}
+                                                        · ${escapeHTML(lesson.time)}
+                                                        · ${lesson.duration} min
+                                                    </div>
+                                                    <div class="small muted">
+                                                        Precio clase: ${formatMoney(lesson.originalPrice)}
+                                                        ${lesson.partial ? " · pago parcial" : ""}
+                                                    </div>
+                                                </div>
+                                                <div class="pending-lesson-amount ${lesson.partial ? "partial" : ""}">
+                                                    ${formatMoney(lesson.owed)}
+                                                </div>
+                                            </div>
+                                        `).join("")}
+                                        <div class="pending-lesson-item" style="margin-top:4px;font-weight:700">
+                                            <div>Total adeudado</div>
+                                            <div class="pending-lesson-amount">
+                                                ${formatMoney(balance)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `
+                            }
+
+                        </div>
+
+                    `;
+
+                }).join("")
+            }
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                ${
+                    state.showAllPayments || db.payments.length <= 30
+                    ? "Pagos"
+                    : "Últimos 30 pagos"
+                }
+            </div>
+
+            ${
+                db.payments.length === 0
+
+                ? `
+                    <div class="empty">
+                        Todavía no hay pagos.
+                    </div>
+                `
+
+                : (() => {
+                    const sorted = db.payments.slice().reverse();
+                    const visible = state.showAllPayments
+                        ? sorted
+                        : sorted.slice(0, 30);
+                    const hidden = sorted.length - visible.length;
+
+                    return visible.map(payment => {
+
+                        const student =
+                            getStudent(payment.studentId);
+
+                        return `
+
+                            <div
+                                style="
+                                    padding:12px 0;
+                                    border-bottom:1px solid var(--border);
+                                "
+                            >
+
+                                <div style="
+                                    display:flex;
+                                    justify-content:space-between;
+                                    align-items:flex-start;
+                                    gap:10px;
+                                ">
+
+                                    <div>
+                                        <b>
+                                            ${
+                                                student
+                                                ? escapeHTML(student.name)
+                                                : "Alumno eliminado"
+                                            }
+                                        </b>
+                                        <div class="small muted" style="margin-top:3px">
+                                            ${formatLessonDate(payment.date)}
+                                            ${payment.note ? " · " + escapeHTML(payment.note) : ""}
+                                        </div>
+                                    </div>
+
+                                    <b>
+                                        ${formatMoney(payment.amount)}
+                                    </b>
+
+                                </div>
+
+                                <div class="actions" style="margin-top:8px">
+                                    <button
+                                        class="btn-secondary"
+                                        data-edit-payment="${payment.id}"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        class="btn-danger"
+                                        data-delete-payment="${payment.id}"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }).join("") + (
+                        !state.showAllPayments && hidden > 0
+                        ? `
+                            <button
+                                class="btn-secondary"
+                                id="showAllPayments"
+                                style="width:100%;margin-top:12px"
+                            >
+                                Ver todos (${sorted.length})
+                            </button>
+                        `
+                        : (
+                            state.showAllPayments && sorted.length > 30
+                            ? `
+                                <button
+                                    class="btn-secondary"
+                                    id="showLessPayments"
+                                    style="width:100%;margin-top:12px"
+                                >
+                                    Ver solo los últimos 30
+                                </button>
+                            `
+                            : ""
+                        )
+                    );
+                })()
+            }
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById("newPayment")
+        .addEventListener("click", () => openPaymentModal());
+
+    const showAllBtn = document.getElementById("showAllPayments");
+    if (showAllBtn) {
+        showAllBtn.addEventListener("click", () => {
+            state.showAllPayments = true;
+            render();
+        });
+    }
+
+    const showLessBtn = document.getElementById("showLessPayments");
+    if (showLessBtn) {
+        showLessBtn.addEventListener("click", () => {
+            state.showAllPayments = false;
+            render();
+        });
+    }
+
+
+    document
+        .querySelectorAll("[data-pdf-student]")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                openStudentPDF(button.dataset.pdfStudent);
+            });
+        });
+
+
+    document
+        .querySelectorAll("[data-edit-payment]")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                openPaymentModal(button.dataset.editPayment);
+            });
+        });
+
+
+    document
+        .querySelectorAll("[data-delete-payment]")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                deletePayment(button.dataset.deletePayment);
+            });
+        });
+
+}
+
+
+function openStudentPDF(studentId) {
+
+    const student = getStudent(studentId);
+
+    if (!student) {
+        alert("Alumno no encontrado.");
+        return;
+    }
+
+    // Comprobante orientado al alumno:
+    // solo clases a las que ASISTIÓ y todavía adeuda (total o parcial).
+    const balance = getStudentBalance(studentId);
+    const credit = getStudentCredit(studentId);
+    const pendingLessons = getStudentPendingLessons(studentId);
+
+    let lessonsRows = "";
+
+    if (pendingLessons.length === 0) {
+        lessonsRows = `
+            <tr>
+                <td colspan="4" style="text-align:center;color:#94a3b8">
+                    No hay clases adeudadas
+                </td>
+            </tr>
+        `;
+    } else {
+        lessonsRows = pendingLessons.map(lesson => `
+            <tr>
+                <td>${formatLessonDate(lesson.date)}</td>
+                <td>${escapeHTML(lesson.time)}</td>
+                <td>${lesson.duration} min</td>
+                <td>${formatMoney(lesson.owed)}</td>
+            </tr>
+        `).join("");
+    }
+
+    const generatedAt = new Date().toLocaleString("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    const html = `
+        <div class="print-doc">
+
+            <h1>Agenda de alumnos particulares</h1>
+            <div class="meta">
+                Comprobante de alumno · Generado: ${escapeHTML(generatedAt)}
+            </div>
+
+            <p style="font-size:14px;font-weight:600;margin:0 0 2px;color:#0f172a">
+                ${escapeHTML(student.name)}
+            </p>
+            ${
+                student.phone
+                ? `<p style="margin:0 0 16px;font-size:12px;color:#64748b">
+                    ${escapeHTML(student.phone)}
+                   </p>`
+                : `<p style="margin:0 0 16px"></p>`
+            }
+
+            <h2 style="margin:18px 0 8px">
+                Clases adeudadas
+                <span style="font-weight:400;font-size:11px;color:#94a3b8;text-transform:none;letter-spacing:0">
+                    · solo asistió · de más antigua a más reciente
+                </span>
+            </h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Duración</th>
+                        <th>Adeuda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${lessonsRows}
+                </tbody>
+            </table>
+
+            <table style="margin-top:20px">
+                <tr class="total-row">
+                    <td>${
+                        credit > 0
+                        ? "A favor"
+                        : (balance > 0 ? "Debe" : "Al día")
+                    }</td>
+                    <td style="text-align:right">${formatMoney(
+                        credit > 0 ? credit : balance
+                    )}</td>
+                </tr>
+            </table>
+
+            <div class="print-footer">
+                Agenda de alumnos particulares · Documento generado automáticamente
+            </div>
+
+        </div>
+    `;
+
+    const modal = document.getElementById("modal");
+
+    modal.innerHTML = `
+
+        <div class="modal-header no-print">
+
+            <div class="modal-title">
+                Comprobante · ${escapeHTML(student.name)}
+            </div>
+
+            <button class="close" id="closeModal">×</button>
+
+        </div>
+
+        <div id="printArea">
+            ${html}
+        </div>
+
+        <div class="actions no-print" style="margin-top:16px">
+
+            <button class="btn-secondary" id="cancelPDF">
+                Cerrar
+            </button>
+
+            <button class="btn" id="printPDF">
+                Imprimir / Guardar PDF
+            </button>
+
+        </div>
+
+    `;
+
+    openModal();
+
+    document.getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+    document.getElementById("cancelPDF")
+        .addEventListener("click", closeModal);
+
+    document.getElementById("printPDF")
+        .addEventListener("click", () => {
+            const originalTitle = document.title;
+
+            const safeName = String(student.name || "alumno")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-zA-Z0-9]+/g, "_")
+                .replace(/^_+|_+$/g, "")
+                .toLowerCase() || "alumno";
+
+            const now = new Date();
+            // Formato local: DD-MM-YYYY_HH-MM-SS
+            // (guiones en la hora: ":" no es válido en nombres de archivo en Windows)
+            const fecha =
+                String(now.getDate()).padStart(2, "0") +
+                "-" +
+                String(now.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(now.getFullYear());
+            const hora =
+                String(now.getHours()).padStart(2, "0") +
+                "-" +
+                String(now.getMinutes()).padStart(2, "0") +
+                "-" +
+                String(now.getSeconds()).padStart(2, "0");
+
+            // El navegador usa document.title como nombre por defecto al "Guardar como PDF"
+            document.title = safeName + "_" + fecha + "_" + hora;
+
+            window.print();
+
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 1000);
+        });
+}
+
+
+function openPaymentModal(paymentId = null) {
+
+    if (db.students.length === 0) {
+
+        alert(
+            "Primero cargá un alumno."
+        );
+
+        return;
+    }
+
+    const editingPayment = paymentId
+        ? db.payments.find(p => p.id === paymentId)
+        : null;
+
+    if (paymentId && !editingPayment) {
+        alert("Pago no encontrado.");
+        return;
+    }
+
+    const modal =
+        document.getElementById("modal");
+
+    const defaultStudentId = editingPayment
+        ? editingPayment.studentId
+        : db.students[0].id;
+
+    function studentPaymentLabel(studentId) {
+        return getBalanceDisplay(studentId).text;
+    }
+
+    modal.innerHTML = `
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                ${editingPayment ? "Editar pago" : "Registrar pago"}
+            </div>
+
+            <button
+                class="close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Alumno</label>
+
+            <select id="paymentStudent">
+
+                ${db.students.map(student => `
+                    <option
+                        value="${student.id}"
+                        ${student.id === defaultStudentId ? "selected" : ""}
+                    >
+                        ${escapeHTML(student.name)}
+                        — ${studentPaymentLabel(student.id)}
+                    </option>
+                `).join("")}
+
+            </select>
+
+        </div>
+
+        <div id="paymentPendingPreview" class="small muted" style="margin-bottom:12px"></div>
+
+
+        <div class="form-group">
+
+            <label>Monto ($)</label>
+
+            <input
+                id="paymentAmount"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="Ej.: 10000"
+                value="${editingPayment ? Number(editingPayment.amount) || "" : ""}"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Fecha</label>
+
+            <input
+                id="paymentDate"
+                type="date"
+                value="${editingPayment ? editingPayment.date : todayKey()}"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Nota</label>
+
+            <input
+                id="paymentNote"
+                placeholder="Opcional"
+                value="${editingPayment ? escapeHTML(editingPayment.note || "") : ""}"
+            >
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn-secondary"
+                id="cancelPayment"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn"
+                id="savePayment"
+            >
+                ${editingPayment ? "Guardar cambios" : "Guardar pago"}
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+
+    function updatePaymentPreview() {
+
+        const studentId =
+            document.getElementById("paymentStudent").value;
+
+        const preview =
+            document.getElementById("paymentPendingPreview");
+
+        const balance = getStudentBalance(studentId);
+        const credit = getStudentCredit(studentId);
+        const pending =
+            getStudentPendingLessons(studentId);
+
+        let info = `
+            <div style="margin-bottom:6px">
+                ${
+                    credit > 0
+                    ? `Crédito a favor: <b>${formatMoney(credit)}</b>`
+                    : `Saldo adeudado: <b>${formatMoney(balance)}</b>`
+                }
+            </div>
+            <div style="margin-bottom:6px">
+                Podés pagar de más: el excedente queda a favor y se usa en próximas asistencias.
+            </div>
+        `;
+
+        if (pending.length > 0) {
+            info += `
+                <div style="margin-bottom:4px">
+                    Clases con saldo (de más antigua a más reciente):
+                </div>
+                ${pending.map(l => `
+                    <div>
+                        · ${formatLessonDate(l.date)} ${escapeHTML(l.time)}
+                        (${l.duration} min) — ${formatMoney(l.owed)}
+                    </div>
+                `).join("")}
+            `;
+        } else if (credit === 0) {
+            info += "Sin clases asistidas con deuda. Un pago quedará como adelanto.";
+        }
+
+        preview.innerHTML = info;
+    }
+
+    updatePaymentPreview();
+
+    document
+        .getElementById("paymentStudent")
+        .addEventListener("change", updatePaymentPreview);
+
+
+    document
+        .getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("cancelPayment")
+        .addEventListener("click", closeModal);
+
+
+    document
+        .getElementById("savePayment")
+        .addEventListener("click", () => {
+
+            const studentId =
+                document
+                    .getElementById("paymentStudent")
+                    .value;
+
+            const amount =
+                Number(
+                    document
+                        .getElementById("paymentAmount")
+                        .value
+                );
+
+            const date =
+                document
+                    .getElementById("paymentDate")
+                    .value;
+
+            const note =
+                document
+                    .getElementById("paymentNote")
+                    .value
+                    .trim();
+
+
+            if (!studentId) {
+
+                alert(
+                    "Seleccioná un alumno."
+                );
+
+                return;
+            }
+
+
+            if (
+                !Number.isFinite(amount) ||
+                amount <= 0
+            ) {
+
+                alert(
+                    "Ingresá un monto válido."
+                );
+
+                return;
+            }
+
+
+            if (!date) {
+
+                alert(
+                    "Seleccioná una fecha."
+                );
+
+                return;
+            }
+
+
+            if (editingPayment) {
+
+                editingPayment.studentId = studentId;
+                editingPayment.amount = amount;
+                editingPayment.date = date;
+                editingPayment.note = note;
+
+            } else {
+
+                db.payments.push({
+
+                    id: generateId("payment"),
+
+                    studentId,
+
+                    amount,
+
+                    date,
+
+                    note
+
+                });
+
+            }
+
+
+            saveDatabase();
+            closeModal();
+            render();
+
+            showToast(
+                editingPayment
+                    ? "Pago actualizado"
+                    : "Pago registrado"
+            );
+
+        });
+
+}
+
+
+function deletePayment(paymentId) {
+
+    const payment = db.payments.find(p => p.id === paymentId);
+
+    if (!payment) {
+        return;
+    }
+
+    const student = getStudent(payment.studentId);
+    const name = student ? student.name : "este alumno";
+
+    if (
+        !confirm(
+            `¿Eliminar el pago de ${formatMoney(payment.amount)} de ${name}?`
+        )
+    ) {
+        return;
+    }
+
+    db.payments = db.payments.filter(p => p.id !== paymentId);
+
+    saveDatabase();
+    render();
+
+    showToast("Pago eliminado");
+}
+
+
+/* =========================================================
+   FINANZAS (reporte de solo lectura)
+   ========================================================= */
+
+function monthKeyFromDateStr(dateStr) {
+    // YYYY-MM-DD → YYYY-MM
+    return String(dateStr || "").slice(0, 7);
+}
+
+
+function formatMonthKey(ym) {
+    if (!ym || ym.length < 7) return ym || "—";
+    const [y, m] = ym.split("-");
+    const months = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+    const idx = Number(m) - 1;
+    const name = months[idx] || m;
+    return name.charAt(0).toUpperCase() + name.slice(1) + " " + y;
+}
+
+
+function renderFinances() {
+
+    const content = document.getElementById("content");
+
+    const totalPaid = db.payments.reduce(
+        (sum, p) => sum + Number(p.amount || 0),
+        0
+    );
+    const totalPending = getTotalPending();
+    const totalCredit = db.students.reduce(
+        (sum, s) => sum + getStudentCredit(s.id),
+        0
+    );
+
+    const now = new Date();
+    const thisMonthKey =
+        String(now.getFullYear()) +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0");
+
+    const paidThisMonth = db.payments
+        .filter(p => monthKeyFromDateStr(p.date) === thisMonthKey)
+        .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+
+    // Caja: pagos por fecha de cobro
+    const byMonthGlobal = {};
+    db.payments.forEach(p => {
+        const k = monthKeyFromDateStr(p.date);
+        if (!k) return;
+        byMonthGlobal[k] = (byMonthGlobal[k] || 0) + Number(p.amount || 0);
+    });
+    const monthKeysGlobal = Object.keys(byMonthGlobal).sort().reverse();
+
+    const studentsWithActivity = db.students
+        .filter(s => {
+            const hasLesson = db.lessons.some(l => l.studentId === s.id);
+            const hasPayment = db.payments.some(p => p.studentId === s.id);
+            return hasLesson || hasPayment;
+        })
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
+    const studentBlocks = db.students.length === 0
+        ? `<div class="card empty">Todavía no hay alumnos.</div>`
+        : studentsWithActivity.length === 0
+        ? `<div class="card empty">Ningún alumno tiene clases o pagos todavía.</div>`
+        : studentsWithActivity
+            .map(student => {
+
+                const sid = student.id;
+                const attended = db.lessons.filter(
+                    l => l.studentId === sid && l.status === "attended"
+                ).length;
+                const absent = db.lessons.filter(
+                    l => l.studentId === sid && l.status === "absent"
+                ).length;
+                const pendingStatus = db.lessons.filter(
+                    l => l.studentId === sid && (l.status || "pending") === "pending"
+                ).length;
+
+                const paidTotal = getStudentRawPaid(sid);
+                const bal = getBalanceDisplay(sid);
+
+                // Pagos por mes = fecha en que se registró el cobro
+                const payByMonth = {};
+                db.payments
+                    .filter(p => p.studentId === sid)
+                    .forEach(p => {
+                        const k = monthKeyFromDateStr(p.date);
+                        if (!k) return;
+                        payByMonth[k] = (payByMonth[k] || 0) + Number(p.amount || 0);
+                    });
+
+                // Clases por mes = fecha de la clase (solo las aún en agenda)
+                const classByMonth = {};
+                db.lessons
+                    .filter(l => l.studentId === sid)
+                    .forEach(l => {
+                        const k = monthKeyFromDateStr(l.date);
+                        if (!k) return;
+                        if (!classByMonth[k]) {
+                            classByMonth[k] = { attended: 0, absent: 0 };
+                        }
+                        if (l.status === "attended") {
+                            classByMonth[k].attended++;
+                        } else if (l.status === "absent") {
+                            classByMonth[k].absent++;
+                        }
+                    });
+
+                const monthKeys = Array.from(
+                    new Set([
+                        ...Object.keys(payByMonth),
+                        ...Object.keys(classByMonth)
+                    ])
+                ).sort().reverse();
+
+                let monthRows = "";
+                if (monthKeys.length === 0) {
+                    monthRows = `
+                        <div class="small muted" style="margin-top:10px">
+                            Sin movimientos registrados.
+                        </div>
+                    `;
+                } else {
+                    monthRows = `
+                        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+                            <div class="small muted" style="margin-bottom:8px">
+                                Detalle por mes
+                                <span style="display:block;margin-top:2px">
+                                    Las clases usan la fecha de la clase; el cobro usa la fecha del pago (pueden diferir).
+                                </span>
+                            </div>
+                            ${monthKeys.map(k => {
+                                const paid = payByMonth[k] || 0;
+                                const att = classByMonth[k]?.attended || 0;
+                                const abs = classByMonth[k]?.absent || 0;
+                                return `
+                                    <div style="
+                                        padding:10px 0;
+                                        border-bottom:1px solid var(--border);
+                                        font-size:13px;
+                                    ">
+                                        <div style="font-weight:600;margin-bottom:6px">
+                                            ${formatMonthKey(k)}
+                                        </div>
+                                        <div style="
+                                            display:flex;
+                                            justify-content:space-between;
+                                            gap:12px;
+                                            color:var(--muted);
+                                        ">
+                                            <div>
+                                                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:2px">
+                                                    Clases del mes
+                                                </div>
+                                                <div style="color:var(--text)">
+                                                    Asistió <b>${att}</b> · Faltó <b>${abs}</b>
+                                                </div>
+                                            </div>
+                                            <div style="text-align:right">
+                                                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:2px">
+                                                    Cobrado en el mes
+                                                </div>
+                                                <div style="color:var(--text)">
+                                                    <b>${formatMoney(paid)}</b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join("")}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="card" style="margin-bottom:12px">
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:flex-start;
+                            gap:10px;
+                        ">
+                            <div>
+                                <div style="font-weight:600;color:var(--text)">
+                                    ${escapeHTML(student.name)}
+                                </div>
+                                <div class="small muted" style="margin-top:4px">
+                                    En agenda:
+                                    asistió <b>${attended}</b>
+                                    · faltó <b>${absent}</b>
+                                    ${
+                                        pendingStatus > 0
+                                        ? `· pendientes <b>${pendingStatus}</b>
+                                           <span style="opacity:0.85">(no suman deuda)</span>`
+                                        : ""
+                                    }
+                                </div>
+                                <div class="small muted" style="margin-top:2px;font-size:11px">
+                                    Asistencias/faltas = clases aún cargadas (no incluye archivadas).
+                                </div>
+                            </div>
+                            <div
+                                class="balance ${bal.css}"
+                                style="flex-shrink:0"
+                            >
+                                ${bal.text}
+                            </div>
+                        </div>
+
+                        <div class="small" style="margin-top:10px">
+                            Cobrado en total (todos los pagos):
+                            <b>${formatMoney(paidTotal)}</b>
+                        </div>
+
+                        ${monthRows}
+                    </div>
+                `;
+            }).join("");
+
+    const attendedThisMonth = db.lessons.filter(
+        l =>
+            monthKeyFromDateStr(l.date) === thisMonthKey &&
+            l.status === "attended"
+    ).length;
+    const absentThisMonth = db.lessons.filter(
+        l =>
+            monthKeyFromDateStr(l.date) === thisMonthKey &&
+            l.status === "absent"
+    ).length;
+
+    content.innerHTML = `
+
+        <div class="card" style="margin-bottom:12px">
+            <p class="small muted" style="margin:0">
+                Vista de solo lectura. El <b>cobrado</b> se agrupa por la fecha del pago
+                (cuándo entró la plata). Las <b>clases</b> se agrupan por la fecha de la clase.
+                Si alguien paga en octubre clases de septiembre, el dinero cuenta en octubre.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Mes en curso · ${formatMonthKey(thisMonthKey)}</div>
+            <div class="dashboard" style="margin:0">
+                <div class="stat">
+                    <div class="stat-label">Cobrado este mes</div>
+                    <div class="stat-value">${formatMoney(paidThisMonth)}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Clases asistió</div>
+                    <div class="stat-value">${attendedThisMonth}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Clases faltó</div>
+                    <div class="stat-value">${absentThisMonth}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Pendiente cobrar</div>
+                    <div class="stat-value">${formatMoney(totalPending)}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+
+            <div class="stat">
+                <div class="stat-label">Cobrado histórico</div>
+                <div class="stat-value">${formatMoney(totalPaid)}</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Crédito a favor</div>
+                <div class="stat-value">${formatMoney(totalCredit)}</div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-title">Cobrado por mes</div>
+            <p class="small muted" style="margin-top:0;margin-bottom:8px">
+                Según la fecha en que registraste el pago (caja del mes).
+            </p>
+            ${
+                monthKeysGlobal.length === 0
+                ? `<div class="empty">Todavía no hay pagos.</div>`
+                : monthKeysGlobal.map(k => `
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        padding:8px 0;
+                        border-bottom:1px solid var(--border);
+                        font-size:14px;
+                    ">
+                        <span>${formatMonthKey(k)}</span>
+                        <b>${formatMoney(byMonthGlobal[k])}</b>
+                    </div>
+                `).join("")
+            }
+        </div>
+
+        <div class="card" style="padding-bottom:4px">
+            <div class="card-title">Por alumno</div>
+            <p class="small muted" style="margin-top:0;margin-bottom:8px">
+                Saldo = solo clases asistidas aún en agenda.
+                Cobrado total = suma de pagos (aunque hayas archivado clases).
+            </p>
+        </div>
+
+        ${studentBlocks}
+
+    `;
+}
+
+
+/* =========================================================
+   DATOS / BACKUP
+   ========================================================= */
+
+function renderData() {
+
+    const content =
+        document.getElementById("content");
+
+
+    const size =
+        new Blob([
+            JSON.stringify(db)
+        ]).size;
+
+
+    content.innerHTML = `
+
+        <div class="card">
+
+            <div class="card-title">
+                Datos y respaldo
+            </div>
+
+            <p class="small muted">
+                Tus datos se guardan automáticamente
+                en este dispositivo y navegador.
+            </p>
+
+            <p class="small muted" style="margin-top:0">
+                Último respaldo exportado:
+                <b>${escapeHTML(formatLastBackupLabel())}</b>
+            </p>
+
+            <p class="small muted">
+                Recomendación: exportá y guardá el archivo en
+                <b>Google Drive</b> o una <b>carpeta fija</b> de la PC.
+                El nombre será del tipo
+                <b>agenda-alumnos-backup-${todayKey()}.json</b>.
+            </p>
+
+            <button
+                class="btn"
+                id="exportData"
+            >
+                Exportar respaldo
+            </button>
+
+            <div class="form-group" style="margin-top:12px">
+
+                <label>
+                    Restaurar un respaldo
+                </label>
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept=".json,application/json"
+                >
+
+            </div>
+
+            <button
+                class="btn-secondary"
+                id="importData"
+            >
+                Restaurar respaldo
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Información
+            </div>
+
+            <div class="small">
+                Alumnos:
+                <b>${db.students.length}</b>
+            </div>
+
+            <div class="small">
+                Clases:
+                <b>${db.lessons.length}</b>
+            </div>
+
+            <div class="small">
+                Pagos:
+                <b>${db.payments.length}</b>
+            </div>
+
+            <div class="small">
+                Tamaño de datos:
+                <b>${Math.ceil(size / 1024)} KB</b>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Zona de seguridad
+            </div>
+
+            <p class="small muted">
+                Borrar los datos elimina la información
+                guardada en este navegador.
+                Antes de hacerlo, exportá un respaldo.
+            </p>
+
+            <button
+                class="btn-danger"
+                id="deleteAll"
+            >
+                Borrar todos los datos
+            </button>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById("exportData")
+        .addEventListener("click", exportData);
+
+
+    document
+        .getElementById("importData")
+        .addEventListener("click", importData);
+
+
+    document
+        .getElementById("deleteAll")
+        .addEventListener("click", deleteAllData);
+
+}
+
+
+function getLastBackupAt() {
+    try {
+        return localStorage.getItem(BACKUP_META_KEY) || null;
+    } catch {
+        return null;
+    }
+}
+
+
+function setLastBackupAt(iso) {
+    try {
+        localStorage.setItem(BACKUP_META_KEY, iso);
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+
+function formatLastBackupLabel() {
+    const iso = getLastBackupAt();
+    if (!iso) {
+        return "Nunca";
+    }
+    try {
+        const d = new Date(iso);
+        return d.toLocaleString("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    } catch {
+        return iso;
+    }
+}
+
+
+function daysSinceLastBackup() {
+    const iso = getLastBackupAt();
+    if (!iso) {
+        return Infinity;
+    }
+    const then = new Date(iso).getTime();
+    if (!Number.isFinite(then)) {
+        return Infinity;
+    }
+    return (Date.now() - then) / (1000 * 60 * 60 * 24);
+}
+
+
+function maybeRemindBackup() {
+    try {
+        if (sessionStorage.getItem("agenda_backup_reminded") === "1") {
+            return;
+        }
+
+        const days = daysSinceLastBackup();
+        let lastActivity = null;
+        try {
+            lastActivity = localStorage.getItem("agenda_alumnos_last_activity");
+        } catch (e) {
+            lastActivity = null;
+        }
+
+        const hasData =
+            db.students.length > 0 ||
+            db.lessons.length > 0 ||
+            db.payments.length > 0;
+
+        if (!hasData) {
+            return;
+        }
+
+        const activityAfterBackup =
+            lastActivity &&
+            getLastBackupAt() &&
+            new Date(lastActivity).getTime() > new Date(getLastBackupAt()).getTime();
+
+        let msg = null;
+
+        if (!getLastBackupAt()) {
+            msg = "Todavía no exportaste un respaldo. Andá a Datos y guardalo en Drive o una carpeta fija.";
+        } else if (days >= 14) {
+            msg = "Pasaron más de 14 días sin exportar un respaldo. Conviene hacer uno en Datos.";
+        } else if (days >= 7 && activityAfterBackup) {
+            msg = "Hubo movimientos y el último respaldo tiene más de 7 días. Conviene exportar en Datos.";
+        }
+
+        if (msg) {
+            sessionStorage.setItem("agenda_backup_reminded", "1");
+            setTimeout(() => showToast(msg), 800);
+        }
+    } catch (e) {
+        // sessionStorage puede fallar en algunos contextos
+    }
+}
+
+
+function exportData() {
+
+    const exportedAt = new Date().toISOString();
+
+    const backup = {
+
+        app: "Agenda de alumnos particulares",
+
+        version: 6,
+
+        exportedAt,
+
+        data: db
+
+    };
+
+
+    const blob =
+        new Blob(
+            [JSON.stringify(backup, null, 2)],
+            {
+                type: "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+    // Nombre claro para guardar en Drive / carpeta fija
+    link.download =
+        "agenda-alumnos-backup-" +
+        todayKey() +
+        ".json";
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    setLastBackupAt(exportedAt);
+
+    showToast(
+        "Respaldo exportado"
+    );
+
+    // Refrescar la sección Datos si estamos ahí
+    if (state.section === "data") {
+        render();
+    }
+}
+
+
+function importData() {
+
+    const input =
+        document.getElementById("importFile");
+
+
+    const file =
+        input.files[0];
+
+
+    if (!file) {
+
+        alert(
+            "Seleccioná primero un archivo JSON."
+        );
+
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Importar este respaldo reemplazará los datos actuales. ¿Continuar?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = () => {
+
+        try {
+
+            const parsed =
+                JSON.parse(reader.result);
+
+
+            /*
+                Aceptamos tanto:
+
+                { students, lessons, payments }
+
+                como:
+
+                { app, version, data }
+            */
+
+            const imported =
+                parsed.data || parsed;
+
+
+            if (
+                !imported ||
+                !Array.isArray(imported.students) ||
+                !Array.isArray(imported.lessons) ||
+                !Array.isArray(imported.payments)
+            ) {
+
+                throw new Error(
+                    "Formato inválido"
+                );
+
+            }
+
+
+            db = normalizeDbPayload(imported);
+
+
+            saveDatabase();
+            render();
+
+            showToast(
+                "Respaldo restaurado"
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "No se pudo importar el respaldo. El archivo no parece ser válido."
+            );
+
+        }
+
+    };
+
+
+    reader.readAsText(file);
+
+}
+
+
+function deleteAllData() {
+
+    const confirmation =
+        prompt(
+            'Para borrar todo escribí: BORRAR'
+        );
+
+
+    if (confirmation !== "BORRAR") {
+
+        return;
+    }
+
+
+    db =
+        structuredClone(DEFAULT_DB);
+
+
+    saveDatabase();
+    render();
+
+    showToast(
+        "Todos los datos fueron eliminados"
+    );
+}
+
+
+/* =========================================================
+   WHATSAPP
+   ========================================================= */
+
+function normalizePhone(phone) {
+
+    return String(phone || "")
+        .replace(/\D/g, "");
+
+}
+
+
+/* =========================================================
+   BOTÓN FLOTANTE
+   ========================================================= */
+
+document
+    .getElementById("fab")
+    .addEventListener("click", () => {
+
+        if (state.section === "students") {
+
+            openStudentModal();
+
+            return;
+        }
+
+        if (state.section === "payments") {
+
+            openPaymentModal();
+
+            return;
+        }
+
+        openLessonModal(
+            dateKeyFromDate(
+                state.selectedDate
+            )
+        );
+
+    });
+
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+
+// Si hoy hay clases sin marcar, abrir en Día para agilizar la rutina
+(function initStartSection() {
+    try {
+        const today = todayKey();
+        const unmarked = getUnmarkedLessonsForDate(today);
+        if (unmarked.length > 0) {
+            state.section = "day";
+            const now = new Date();
+            state.selectedDate = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate(),
+                12, 0, 0, 0
+            );
+        }
+    } catch (e) {
+        /* ignore */
+    }
+})();
+
+render();
+maybeRemindBackup();
+
+
+/* PWA: service worker (requiere servir por http/https, no file://) */
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("./sw.js")
+            .catch((err) => {
+                console.warn("Service worker no registrado:", err);
+            });
+    });
+}
+
+</script>
+
+</body>
+</html>
